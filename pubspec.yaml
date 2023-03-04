@@ -5,7 +5,7 @@ author: Ashraff Hathibelagal <hathi@progur.com>
 homepage: https://github.com/hathibelagal-dev/text-to-path-maker-for-flutter
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: '>=2.19.2 <3.0.0'
 
 dependencies:
   flutter:

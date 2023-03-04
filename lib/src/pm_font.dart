@@ -1,5 +1,6 @@
-import 'pm_contour_point.dart';
 import 'dart:ui';
+
+import 'pm_contour_point.dart';
 
 /**
 * Text to Path Maker
@@ -21,7 +22,7 @@ class PMFont {
   /// Groups the points of a glyph into contours. Returns a
   /// list of contours
   List _contourify(points, endPoints) {
-    var contours = [];
+    final contours = [];
     var currentContour = [];
     for (var i = 0; i < points.length; i++) {
       currentContour.add(points[i]);
@@ -38,36 +39,36 @@ class PMFont {
   /// Converts a character into a Flutter [Path] you can
   /// directly draw on a [Canvas]
   Path generatePathForCharacter(cIndex) {
-    var svgPath = generateSVGPathForCharacter(cIndex);
-    var commands = svgPath.split(" ");
+    final svgPath = generateSVGPathForCharacter(cIndex);
+    final commands = svgPath.split(" ");
 
-    Path path = Path();
+    final Path path = Path();
 
-    commands.forEach((command) {
+    for (final command in commands) {
       if (command.startsWith("M")) {
-        var coords = command.substring(1).split(",");
-        var x = double.parse(coords[0]);
-        var y = double.parse(coords[1]);
+        final coords = command.substring(1).split(",");
+        final x = double.parse(coords[0]);
+        final y = double.parse(coords[1]);
         path.moveTo(x, y);
       }
       if (command.startsWith("L")) {
-        var coords = command.substring(1).split(",");
-        var x = double.parse(coords[0]);
-        var y = double.parse(coords[1]);
+        final coords = command.substring(1).split(",");
+        final x = double.parse(coords[0]);
+        final y = double.parse(coords[1]);
         path.lineTo(x, y);
       }
       if (command.startsWith("Q")) {
-        var coords = command.substring(1).split(",");
-        var x1 = double.parse(coords[0]);
-        var y1 = double.parse(coords[1]);
-        var x2 = double.parse(coords[2]);
-        var y2 = double.parse(coords[3]);
+        final coords = command.substring(1).split(",");
+        final x1 = double.parse(coords[0]);
+        final y1 = double.parse(coords[1]);
+        final x2 = double.parse(coords[2]);
+        final y2 = double.parse(coords[3]);
         path.quadraticBezierTo(x1, y1, x2, y2);
       }
       if (command.startsWith("z")) {
         path.close();
       }
-    });
+    }
 
     return path;
   }
@@ -87,20 +88,19 @@ class PMFont {
       return "";
     }
 
-    var contours = _contourify(
-        tables['glyf'].data['glyphs'][glyphId]['contourData']['points'],
+    final contours = _contourify(tables['glyf'].data['glyphs'][glyphId]['contourData']['points'],
         tables['glyf'].data['glyphs'][glyphId]['endIndices']);
 
     var path = "";
 
     for (var k = 0; k < contours.length; k++) {
-      var contour = contours[k];
+      final contour = contours[k];
 
-      var interpolated = [];
+      final interpolated = [];
       for (var i = 0; i < contour.length - 1; i++) {
         interpolated.add(contour[i]);
         if (!contour[i].isOnCurve && !contour[i + 1].isOnCurve) {
-          var t = PMContourPoint();
+          final t = PMContourPoint();
           t.x = (contour[i].x + contour[i + 1].x) / 2;
           t.y = (contour[i].y + contour[i + 1].y) / 2;
           t.isOnCurve = true;
@@ -108,9 +108,9 @@ class PMFont {
         }
       }
       interpolated.add(contour[contour.length - 1]);
-      var lastPoint = contour[contour.length - 1];
+      final lastPoint = contour[contour.length - 1];
       if (!lastPoint.isOnCurve) {
-        var t = PMContourPoint();
+        final t = PMContourPoint();
         t.x = (lastPoint.x + contour[0].x) / 2;
         t.y = (lastPoint.y + contour[0].y) / 2;
         t.isOnCurve = true;
